@@ -178,9 +178,18 @@ class ConnectionManager {
     // exists all connections
     
     func exitAll() {
-       // exit all
+        let connectionIds = Array(connections.keys)
+        
+        for id in connectionIds {
+            if let connection = connections[id] {
+                connection.cancel()
+                print("[\(id)] Connection terminated")
+            }
+        }
+        
+        connections.removeAll()
+        print("All connections terminated (\(connectionIds.count) total)")
     }
-    
     
     // returns Ip of user
     func myIp() -> String {
