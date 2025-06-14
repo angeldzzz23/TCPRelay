@@ -164,7 +164,15 @@ class ConnectionManager {
     // terminates connection
     func terminate(id: Int) {
         
-        // TODO:
+        guard let connection = connections[id] else {
+            print("[\(id)] Connection not found")
+            return
+        }
+        
+        connection.cancel()
+        connections.removeValue(forKey: id)
+        print("[\(id)] Connection terminated")
+        
     }
     
     // exists all connections
