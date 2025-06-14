@@ -17,6 +17,42 @@ class ConnectionManager {
     private var nextId = 1
     
     
+    // Serve as my connect method
+    func connect(to host: String, port: UInt16) {
+        // TODO:
+    }
+    
+    // serve as receive method
+    func receive(_ connection: NWConnection, id: Int) {
+        // TODO:
+    }
+    
+    func listConnections() {
+        // TODO:
+    }
+    
+    
+    func send(to id: Int, message: String) {
+        // TODO:
+    }
+    
+    // terminates connection
+    func terminate(id: Int) {
+        
+        // TODO:
+    }
+    
+    // exists all connections
+    
+    func exitAll() {
+       // exit all
+    }
+    
+    
+    // returns Ip of user
+    func myIp() {
+        
+    }
     
     
 }
