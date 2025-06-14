@@ -11,7 +11,7 @@ func printHelp() {
     print("""
     Commands:
     start <port>               - Start TCP server on port 
-    connect <ip> <port>       - Connect to a TCP server
+    connect <ip addy> <port>       - Connect to a TCP server
     send <id> <message>       - Send message to connection id
     list                      - List all connections
     terminate <id>            - Terminate connection by id
@@ -45,7 +45,11 @@ func commandLoop() {
                 printHelp()
             case "connect":
                 if parts.count == 3, let port = UInt16(parts[2]) {
-                    ConnectionManager.shared.connect(to: parts[1], port: port)
+                    if let connectionId = ConnectionManager.shared.connect(to: parts[1], port: port) {
+                        print("Connection initiated with ID: \(connectionId)")
+                    } else {
+                        print("Failed to initiate connection")
+                    }
                 } else {
                     print("Usage: connect <ip> <port>")
                 }

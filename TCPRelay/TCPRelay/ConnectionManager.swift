@@ -63,10 +63,38 @@ class ConnectionManager {
     
     
     // Serve as my connect method
-    func connect(to host: String, port: UInt16) {
-        // TODO:
-        
-    }
+    func connect(to host: String, port: UInt16) -> Int? {
+          guard let nwPort = NWEndpoint.Port(rawValue: port) else {
+              print("Invalid port: \(port)")
+              return nil
+          }
+          
+          let endpoint = NWEndpoint.Host(host)
+          let connection = NWConnection(host: endpoint, port: nwPort, using: .tcp)
+          
+          let connectionId = nextId
+          nextId += 1
+          connections[connectionId] = connection
+          
+          connection.stateUpdateHandler = { (state: NWConnection.State) in
+              switch state {
+              case .ready:
+                  print("[\(connectionId)] Connected to \(host):\(port)")
+                  self.receive(connection, id: connectionId)
+              case .failed(let error):
+                  print("[\(connectionId)] Connection failed: \(error)")
+                  self.connections.removeValue(forKey: connectionId)
+              case .cancelled:
+                  print("[\(connectionId)] Connection cancelled")
+                  self.connections.removeValue(forKey: connectionId)
+              default:
+                  break
+              }
+          }
+          
+          connection.start(queue: DispatchQueue.main)
+          return connectionId
+      }
     
     // serve as receive method
     func receive(_ connection: NWConnection, id: Int) {
