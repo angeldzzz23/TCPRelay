@@ -22,7 +22,6 @@ func printHelp() {
     """)
 }
 
-
 func commandLoop() {
     
     DispatchQueue.global(qos: .background).async {
