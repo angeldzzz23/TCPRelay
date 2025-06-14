@@ -16,6 +16,12 @@ class ConnectionManager {
     private var connections: [Int: NWConnection] = [:]
     private var nextId = 1
     
+    private var listener: NWListener?
+    private var listenerPort: UInt16?
+    
+    func startListening(on port: UInt16) {
+        
+    }
     
     // Serve as my connect method
     func connect(to host: String, port: UInt16) {
