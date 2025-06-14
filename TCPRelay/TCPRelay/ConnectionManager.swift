@@ -20,7 +20,8 @@ class ConnectionManager {
     private var listener: NWListener?
     private var listenerPort: UInt16?
     
-    // this starts listening on my device'
+    // this starts listening on my device + port number
+    // also checks if the user is already using that port
     func startListening(on port: UInt16) {
         
         guard listener == nil else {
@@ -29,7 +30,6 @@ class ConnectionManager {
         }
         
         do {
-        
             let nwPort = NWEndpoint.Port(rawValue: port)!
             listener = try NWListener(using: .tcp, on: nwPort)
             listenerPort = port
@@ -60,6 +60,7 @@ class ConnectionManager {
             print("Failed to start listener: \(error)")
         }
     }
+    
     
     // Serve as my connect method
     func connect(to host: String, port: UInt16) {
