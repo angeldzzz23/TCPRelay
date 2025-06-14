@@ -34,6 +34,13 @@ func commandLoop() {
             let parts = input.split(separator: " ", maxSplits: 2).map(String.init)
 
             switch parts.first?.lowercased() {
+                
+            case "start":
+                if parts.count == 2, let port = UInt16(parts[1]) {
+                    ConnectionManager.shared.startListening(on: port)
+                } else {
+                    print("Usage: start <port>")
+                }
             case "help":
                 printHelp()
             case "connect":

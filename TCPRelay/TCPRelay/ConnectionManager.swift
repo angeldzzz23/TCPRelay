@@ -21,6 +21,42 @@ class ConnectionManager {
     
     func startListening(on port: UInt16) {
         
+        guard listener == nil else {
+            print("Listener already running on port \(listenerPort ?? 0)")
+            return
+        }
+        
+        do {
+        
+            let nwPort = NWEndpoint.Port(rawValue: port)!
+            listener = try NWListener(using: .tcp, on: nwPort)
+            listenerPort = port
+
+            listener?.newConnectionHandler = { newConnection in
+                newConnection.start(queue: .main)
+                print("[Server] New incoming connection from \(newConnection.endpoint)")
+                self.connections[self.nextId] = newConnection
+                self.receive(newConnection, id: self.nextId)
+                print("[\(self.nextId)] Accepted incoming connection")
+                self.nextId += 1
+            }
+
+            listener?.stateUpdateHandler = { state in
+                switch state {
+                case .ready:
+                    print("Server listening on port \(port)")
+                case .failed(let error):
+                    print("Listener failed: \(error)")
+                    self.listener = nil
+                default: break
+                }
+            }
+
+            listener?.start(queue: .main)
+
+        } catch {
+            print("Failed to start listener: \(error)")
+        }
     }
     
     // Serve as my connect method
