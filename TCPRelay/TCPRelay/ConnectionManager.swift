@@ -7,6 +7,7 @@
 
 import Foundation
 import Network
+import Darwin
 
 
 // this will be in charge of all of our connections
@@ -19,6 +20,7 @@ class ConnectionManager {
     private var listener: NWListener?
     private var listenerPort: UInt16?
     
+    // this starts listening on my device'
     func startListening(on port: UInt16) {
         
         guard listener == nil else {
@@ -62,6 +64,7 @@ class ConnectionManager {
     // Serve as my connect method
     func connect(to host: String, port: UInt16) {
         // TODO:
+        
     }
     
     // serve as receive method
@@ -92,9 +95,46 @@ class ConnectionManager {
     
     
     // returns Ip of user
-    func myIp() {
+    func myIp() -> String {
+           
         
-    }
+           var address = "127.0.0.1"
+           
+           var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        
+           guard getifaddrs(&ifaddr) == 0 else {
+               print("Failed to get network interfaces")
+               return address
+           }
+        
+           defer { freeifaddrs(ifaddr) }
+           
+           var ptr = ifaddr
+        
+           while ptr != nil {
+               
+               let interface = ptr!.pointee
+               let addrFamily = interface.ifa_addr.pointee.sa_family
+               
+               if addrFamily == UInt8(AF_INET) {
+                   
+                   let name = String(cString: interface.ifa_name)
+                   
+                   if name == "en0" || name == "wlan0" || name == "eth0" {
+                       var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                       getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len),
+                                  &hostname, socklen_t(hostname.count),
+                                  nil, socklen_t(0), NI_NUMERICHOST)
+                       address = String(cString: hostname)
+                       break
+                   }
+               }
+               ptr = interface.ifa_next
+           }
+           
+        
+           return address
+       }
     
     
 }

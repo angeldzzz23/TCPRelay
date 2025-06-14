@@ -52,7 +52,7 @@ func commandLoop() {
             case "list":
                 ConnectionManager.shared.listConnections()
             case "myip":
-                ConnectionManager.shared.myIp()
+                print(ConnectionManager.shared.myIp())
             case "myport":
                 print("my port")
 //                ConnectionManager.shared.myPort()
