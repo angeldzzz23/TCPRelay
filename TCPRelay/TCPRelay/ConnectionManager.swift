@@ -17,6 +17,7 @@ class ConnectionManager {
     private var connections: [Int: NWConnection] = [:]
     private var nextId = 1
     
+
     private var listener: NWListener?
     private var listenerPort: UInt16?
     
@@ -96,13 +97,42 @@ class ConnectionManager {
           return connectionId
       }
     
-    // serve as receive method
+    // this will send Connection
     func receive(_ connection: NWConnection, id: Int) {
-        // TODO:
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, context, isComplete, error in
+            
+            if let error = error {
+                print("[\(id)] Receive error: \(error)")
+                self.connections.removeValue(forKey: id)
+                return
+            }
+            
+            if let data = data, !data.isEmpty {
+                if let message = String(data: data, encoding: .utf8) {
+                    print("[\(id)] Received: \(message)")
+                } else {
+                    print("[\(id)] Received \(data.count) bytes of binary data")
+                }
+            }
+            
+            if isComplete {
+                print("[\(id)] Connection completed")
+                self.connections.removeValue(forKey: id)
+            } else {
+                // Continue receiving more data
+                self.receive(connection, id: id)
+            }
+        }
     }
     
+    
     func listConnections() {
-        // TODO:
+        
+        func getAllConnectionIds() -> [Int] {
+                return Array(connections.keys).sorted()
+        }
+        
+        print("Connections: \(getAllConnectionIds())")
     }
     
     
@@ -164,6 +194,8 @@ class ConnectionManager {
         
            return address
        }
+    
+    
     
     
 }
