@@ -99,6 +99,7 @@ class ConnectionManager {
     
     // this will send Connection
     func receive(_ connection: NWConnection, id: Int) {
+        
         connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, context, isComplete, error in
             
             if let error = error {
@@ -135,10 +136,30 @@ class ConnectionManager {
         print("Connections: \(getAllConnectionIds())")
     }
     
-    
     func send(to id: Int, message: String) {
-        // TODO:
-    }
+         guard let data = message.data(using: .utf8) else {
+             print("[\(id)] Failed to convert message to data")
+             return
+         }
+         send(to: id, data: data)
+     }
+    
+    
+    func send(to id: Int, data: Data) {
+           guard let connection = connections[id] else {
+               print("[\(id)] Connection not found")
+               return
+           }
+           
+           connection.send(content: data, completion: .contentProcessed { error in
+               if let error = error {
+                   print("[\(id)] Send error: \(error)")
+                   self.connections.removeValue(forKey: id)
+               } else {
+                   print("[\(id)] Sent \(data.count) bytes of binary data")
+               }
+           })
+       }
     
     // terminates connection
     func terminate(id: Int) {

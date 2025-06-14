@@ -60,11 +60,32 @@ func commandLoop() {
             case "myport":
                 print("my port")
 //                ConnectionManager.shared.myPort()
+            
             case "send":
-                if parts.count == 3, let id = Int(parts[1]) {
-                    ConnectionManager.shared.send(to: id, message: parts[2])
+                if parts.count >= 3, let id = Int(parts[1]) {
+                    // Handle quoted messages properly
+                    let message: String
+                    if parts[2].hasPrefix("\"") {
+                        // Join parts and remove quotes
+                        let fullMessage = parts[2...].joined(separator: " ")
+                        if fullMessage.hasPrefix("\"") && fullMessage.hasSuffix("\"") && fullMessage.count > 1 {
+                            message = String(fullMessage.dropFirst().dropLast())
+                        } else {
+                            message = fullMessage
+                        }
+                    } else {
+                        // Join all parts after ID for multi-word messages
+                        message = parts[2...].joined(separator: " ")
+                    }
+                    
+                    print("you sent this: \(message)")
+                    ConnectionManager.shared.send(to: id, message: message)
                 } else {
                     print("Usage: send <id> <message>")
+                    print("Examples:")
+                    print("  send 1 Hello")
+                    print("  send 1 \"How are you dude\"")
+                    print("  send 1 Multi word message")
                 }
             case "terminate":
                 if parts.count == 2, let id = Int(parts[1]) {
