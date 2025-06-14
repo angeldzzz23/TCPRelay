@@ -10,6 +10,7 @@ import Foundation
 func printHelp() {
     print("""
     Commands:
+    start <port>               - Start TCP server on port 
     connect <ip> <port>       - Connect to a TCP server
     send <id> <message>       - Send message to connection id
     list                      - List all connections
