@@ -1,6 +1,6 @@
 # 🕸️ TCP Relay
 
-A Swift-based command-line tool for creating and managing TCP connections. This utility allows your macOS machine to act as both a **TCP server** and a **TCP client**, making it easy to establish, list, communicate with, and terminate TCP socket connections interactively.
+A Swift-based command-line tool for creating and managing TCP connections. This utility allows your macOS machine to act as both a **TCP server** and a **TCP client**, making it easy to establish, list, communicate with, and terminate TCP socket connections interactively. As long as two macs are connected to the same network. It should allow them to communicate. 
 
 
 ----------
