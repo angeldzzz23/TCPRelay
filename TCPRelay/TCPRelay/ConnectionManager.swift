@@ -9,7 +9,6 @@ import Foundation
 import Network
 import Darwin
 
-
 // this will be in charge of all of our connections
 
 class ConnectionManager {
@@ -137,6 +136,7 @@ class ConnectionManager {
     }
     
     func send(to id: Int, message: String) {
+        
          guard let data = message.data(using: .utf8) else {
              print("[\(id)] Failed to convert message to data")
              return
@@ -146,6 +146,7 @@ class ConnectionManager {
     
     
     func send(to id: Int, data: Data) {
+        
            guard let connection = connections[id] else {
                print("[\(id)] Connection not found")
                return
@@ -193,7 +194,6 @@ class ConnectionManager {
     
     // returns Ip of user
     func myIp() -> String {
-           
         
            var address = "127.0.0.1"
            
@@ -228,12 +228,8 @@ class ConnectionManager {
                }
                ptr = interface.ifa_next
            }
-           
-        
+
            return address
        }
-    
-    
-    
     
 }
